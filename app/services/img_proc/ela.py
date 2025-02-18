@@ -26,7 +26,7 @@ def scale_image(image, width, height):
     return cv2.resize(image, (width, height), interpolation=cv2.INTER_NEAREST)
 
 
-def ela(image, quality):
+def ela(image, quality=75):
     recompressed_image = recompress_image(image, quality)
     image_difference = get_image_difference(image, recompressed_image)
 
@@ -35,3 +35,5 @@ def ela(image, quality):
 
     int_difference = np.sqrt(image_difference) * DISPLAY_MULTIPLIER
     int_difference = np.clip(int_difference, ela_min, ela_max).astype(np.uint8)
+
+    return int_difference

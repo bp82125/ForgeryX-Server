@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from app.api.endpoints.image import router as image_router
+from app.api.endpoints.routes import router as image_router
 from app.core.config import settings
 import uvicorn
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
-app.mount("/processed_images",
-          StaticFiles(directory="processed_images"), name="processed_images")
+app.mount("/output",
+          StaticFiles(directory="output"), name="output")
 
 app.include_router(image_router, prefix=settings.API_V1_STR)
 
