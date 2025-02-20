@@ -21,7 +21,8 @@ def extract_blocking_artifact(image, diff_threshold=50, accumulator_size=33, blo
     heatmap = cv2.applyColorMap(
         normalized_map.astype(np.uint8), cv2.COLORMAP_JET)
 
-    return heatmap
+    heatmap_resized = cv2.resize(heatmap, (image.shape[1], image.shape[0]))
+    return heatmap_resized
 
 
 def compute_edge_artifacts(luminance, diff_threshold, accumulator_size):

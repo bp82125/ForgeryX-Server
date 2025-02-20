@@ -17,7 +17,7 @@ router = APIRouter()
 async def upload_image(file: UploadFile = File(...)):
     strUuid = str(uuid.uuid4())
     file_dir = f"{settings.OUTPUT_DIR}/{strUuid}"
-    file_location = os.path.join(file_dir, file.filename)
+    file_location = os.path.join(file_dir, f"{strUuid}{os.path.splitext(file.filename)[1]}")
     os.makedirs(file_dir, exist_ok=True)
 
     with open(file_location, "wb") as buffer:
