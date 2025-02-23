@@ -1,7 +1,11 @@
 import cv2
 
 
-def ghost(image, quality_range=(75, 100), threshold=30):
+def ghost(image_path, quality_range=(75, 100), threshold=30):
+    image = cv2.imread(image_path)
+    if image is None:
+        raise ValueError(f"Image at path {image_path} could not be loaded.")
+    
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     diff_maps = []
 

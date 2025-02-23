@@ -2,7 +2,12 @@ import cv2
 import numpy as np
 
 
-def extract_blocking_artifact(image, diff_threshold=50, accumulator_size=33, block_size=8):
+def blocking(image_path, diff_threshold=50, accumulator_size=33, block_size=8):
+    image = cv2.imread(image_path)
+
+    if image is None:
+        raise ValueError(f"Image at path {image_path} could not be loaded.")
+
     luminance = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)[:, :, 0]
 
     vertical_edges, horizontal_edges = compute_edge_artifacts(
@@ -16,10 +21,10 @@ def extract_blocking_artifact(image, diff_threshold=50, accumulator_size=33, blo
     block_diff = vertical_edges + horizontal_edges
     block_artifact_map = process_blocks(block_diff, block_size)
 
-    normalized_map = cv2.normalize(
-        block_artifact_map, None, 0, 255, cv2.NORM_MINMAX)
+    normalized_map = (block_artifact_map - np.min(block_artifact_map)) / \
+        (np.max(block_artifact_map) - np.min(block_artifact_map))
     heatmap = cv2.applyColorMap(
-        normalized_map.astype(np.uint8), cv2.COLORMAP_JET)
+        np.uint8(255 * normalized_map), cv2.COLORMAP_JET)
 
     heatmap_resized = cv2.resize(heatmap, (image.shape[1], image.shape[0]))
     return heatmap_resized

@@ -26,7 +26,11 @@ def process_channel(channel, block_size=32):
     return noise_map
 
 
-def high_frequency_noise_wavelet(image, block_size=8, threshold=1.0):
+def high_frequency_noise_wavelet(image_path, block_size=8, threshold=1.0):
+    image = cv2.imread(image_path)
+    if image is None:
+        raise ValueError(f"Image at path {image_path} could not be loaded.")
+    
     ycrcb = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)
     Y, Cr, Cb = cv2.split(ycrcb)
 
@@ -40,10 +44,5 @@ def high_frequency_noise_wavelet(image, block_size=8, threshold=1.0):
 
     heatmap = cv2.applyColorMap(
         combined_noise_map.astype(np.uint8), cv2.COLORMAP_JET)
-
-    # segmented_map = np.zeros_like(combined_noise_map)
-    # mean_noise = np.mean(combined_noise_map)
-    # segmented_map[combined_noise_map > mean_noise +
-    #               threshold] = 255
 
     return heatmap

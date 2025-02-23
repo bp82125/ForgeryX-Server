@@ -26,7 +26,12 @@ def scale_image(image, width, height):
     return cv2.resize(image, (width, height), interpolation=cv2.INTER_NEAREST)
 
 
-def ela(image, quality=75):
+def ela(image_path, quality=75):
+    image = cv2.imread(image_path)
+    
+    if image is None:
+        raise ValueError(f"Image at path {image_path} could not be loaded.")
+    
     recompressed_image = recompress_image(image, quality)
     image_difference = get_image_difference(image, recompressed_image)
 
