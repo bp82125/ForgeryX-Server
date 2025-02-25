@@ -1,12 +1,15 @@
 from photoholmes.utils.image import read_image
 from photoholmes.methods.exif_as_language import exif_as_language_preprocessing, EXIFAsLanguage
 
+from app.core.config import settings
+
 import torch
 import numpy as np
 import cv2
 
+
 arch_config = "pretrained"
-path_to_weights = "/home/nhat82125/photoholmes/weights/exif_as_language/weights.pth"
+path_to_weights = f"{settings.WEIGHT_DIR}/exif_as_language/weights.pth"
 
 ExifModel = EXIFAsLanguage(
     arch_config=arch_config,
@@ -14,7 +17,6 @@ ExifModel = EXIFAsLanguage(
 )
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
 ExifModel.to_device(device)
 
 

@@ -8,7 +8,6 @@ from app.services.utils import ensure_jpeg
 
 DQ_Method = DQ()
 
-
 def dq(image_path):
     image = ensure_jpeg(cv2.imread(image_path))
     dct, qtables = read_jpeg_data(image_path)

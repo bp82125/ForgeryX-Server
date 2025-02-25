@@ -5,7 +5,7 @@ import torch
 
 from photoholmes.methods.splicebuster import Splicebuster, splicebuster_preprocessing
 
-method = Splicebuster()
+SpliceBusterMethod = Splicebuster()
 
 def prepare_image(image):
     return torch.from_numpy(cv2.cvtColor(image, cv2.COLOR_BGR2RGB).transpose(2, 0, 1))
@@ -19,7 +19,7 @@ def splicebuster(image_path):
     image_data = {"image": image}
 
     input_image = splicebuster_preprocessing(**image_data)
-    output = method.predict(**input_image)
+    output = SpliceBusterMethod.predict(**input_image)
 
     binary_image = np.array(output, dtype=np.float32)
     normalized_image = cv2.normalize(

@@ -6,8 +6,9 @@ import gc
 
 from photoholmes.methods.trufor import TruFor, trufor_preprocessing
 from photoholmes.utils.image import read_image
+from app.core.config import settings
 
-weight_path = "/home/nhat82125/photoholmes/weights/trufor/trufor.pth.tar"
+weight_path = f"{settings.WEIGHT_DIR}/trufor/trufor.pth.tar"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 weights = torch.load(weight_path, weights_only=False)

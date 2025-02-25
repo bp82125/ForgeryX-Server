@@ -4,8 +4,9 @@ import numpy as np
 
 from photoholmes.methods.catnet import CatNet, catnet_preprocessing
 from photoholmes.utils.image import read_jpeg_data
+from app.core.config import settings
 
-weight_path = "/home/nhat82125/photoholmes/weights/catnet/weights.pth"
+weight_path = f"{settings.WEIGHT_DIR}/catnet/weights.pth"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 arch_config = "pretrained"
 

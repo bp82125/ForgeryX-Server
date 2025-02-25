@@ -1,7 +1,11 @@
 from photoholmes.methods.focal import Focal, focal_preprocessing
 from photoholmes.utils.image import read_image
 
-weight_dir = "/home/nhat82125/photoholmes/weights/focal"
+from app.core.config import settings
+
+import torch
+
+weight_dir = f"{settings.WEIGHT_DIR}/focal"
 path_to_weights = {"ViT": f"{weight_dir}/VIT_weights.pth",
                    "HRNet": f"{weight_dir}/HRNET_weights.pth"}
 
@@ -9,7 +13,7 @@ FocalModel = Focal(
     weights=path_to_weights,
 )
 
-device = "cuda"
+device = "cuda" if torch.cuda.is_available() else "cpu"
 FocalModel.to_device(device)
 
 
