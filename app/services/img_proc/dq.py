@@ -19,7 +19,6 @@ def dq(image_path):
     
     binary_image = np.array(output, dtype=np.float32)
 
-
     normalized_image = cv2.normalize(binary_image, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
     heatmap = cv2.applyColorMap(normalized_image, cv2.COLORMAP_JET)
     

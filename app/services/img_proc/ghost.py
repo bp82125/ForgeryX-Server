@@ -1,13 +1,16 @@
 import cv2
+import os
 
 
-def ghost(image_path, quality_range=(75, 100), threshold=30):
+def ghost(image_path, quality_range=(75, 100), threshold=30, output_dir="output", filename="ghost.png"):
     image = cv2.imread(image_path)
     if image is None:
         raise ValueError(f"Image at path {image_path} could not be loaded.")
-    
+
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    diff_maps = []
+    base_filename = os.path.splitext(filename)[0]  # Remove extension
+
+    results = []
 
     for quality in range(quality_range[0], quality_range[1] + 1, 5):
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
@@ -22,6 +25,11 @@ def ghost(image_path, quality_range=(75, 100), threshold=30):
         _, diff_thresholded = cv2.threshold(
             diff_normalized, threshold, 255, cv2.THRESH_BINARY)
 
-        diff_maps.append((quality, diff_thresholded))
+        output_filename = f"{base_filename}_{quality}.png"
+        output_path = os.path.join(output_dir, output_filename)
 
-    return diff_maps
+        cv2.imwrite(output_path, diff_thresholded)
+
+        results.append((quality, output_path))
+
+    return results

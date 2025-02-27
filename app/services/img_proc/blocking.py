@@ -10,21 +10,17 @@ def blocking(image_path, diff_threshold=50, accumulator_size=33, block_size=8):
 
     luminance = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)[:, :, 0]
 
-    vertical_edges, horizontal_edges = compute_edge_artifacts(
-        luminance, diff_threshold, accumulator_size)
+    vertical_edges, horizontal_edges = compute_edge_artifacts(luminance, diff_threshold, accumulator_size)
 
-    vertical_edges = cv2.resize(
-        vertical_edges, (luminance.shape[1], luminance.shape[0]))
-    horizontal_edges = cv2.resize(
-        horizontal_edges, (luminance.shape[1], luminance.shape[0]))
+    vertical_edges = cv2.resize(vertical_edges, (luminance.shape[1], luminance.shape[0]))
+    horizontal_edges = cv2.resize(horizontal_edges, (luminance.shape[1], luminance.shape[0]))
 
     block_diff = vertical_edges + horizontal_edges
     block_artifact_map = process_blocks(block_diff, block_size)
 
     normalized_map = (block_artifact_map - np.min(block_artifact_map)) / \
         (np.max(block_artifact_map) - np.min(block_artifact_map))
-    heatmap = cv2.applyColorMap(
-        np.uint8(255 * normalized_map), cv2.COLORMAP_JET)
+    heatmap = cv2.applyColorMap(np.uint8(255 * normalized_map), cv2.COLORMAP_JET)
 
     heatmap_resized = cv2.resize(heatmap, (image.shape[1], image.shape[0]))
     return heatmap_resized
