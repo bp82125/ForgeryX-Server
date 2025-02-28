@@ -56,8 +56,8 @@ class SSE_Response:
 
 
 class SSE_Error_Response:
-    def __init__(self, message: str, error_code: int = 400):
-        self.status = "error"
+    def __init__(self, message: str, status: str = "error", error_code: int = 400):
+        self.status = status
         self.message = message
         self.error_code = error_code
 

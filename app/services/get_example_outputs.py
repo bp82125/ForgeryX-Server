@@ -6,6 +6,7 @@ from app.services.sse_response import SSE_Response, SSE_Error_Response
 
 
 async def get_example_outputs(result_json_path):
+    print(result_json_path)
     if not os.path.exists(result_json_path):
         yield SSE_Error_Response("Error: UUID not found", status="error").to_sse()
         return

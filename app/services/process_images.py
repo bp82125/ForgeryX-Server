@@ -51,7 +51,7 @@ async def process_standard_method(method_id, details, image_path, file_dir):
 
     return SSE_Response(
         status="processing",
-        message=f"Xử lí với {details['name']} applied successfully",
+        message=f"Method {details['name']} applied successfully",
         method_id=method_id,
         method_name=details["name"],
         output_path=output_path,
@@ -72,14 +72,17 @@ async def process_image(image_path, file_dir):
                     save_to_json(result.to_json(), file_dir,
                                  settings.RESULT_FILE)
                     yield result.to_sse()
+                    await asyncio.sleep(0.3)
             elif details["result_type"] == "score":
                 result = await process_scored_method(method_id, details, image_path, file_dir)
                 save_to_json(result.to_json(), file_dir, settings.RESULT_FILE)
                 yield result.to_sse()
+                await asyncio.sleep(0.3)
             else:
                 result = await process_standard_method(method_id, details, image_path, file_dir)
                 save_to_json(result.to_json(), file_dir, settings.RESULT_FILE)
                 yield result.to_sse()
+                await asyncio.sleep(0.3)
 
     except Exception as e:
         yield SSE_Error_Response(f"Unexpected processing error: {str(e)}").to_sse()
