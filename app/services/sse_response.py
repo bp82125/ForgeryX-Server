@@ -13,7 +13,8 @@ class SSE_Response:
         method_name: Optional[str] = None,
         method_type: Optional[str] = None,
         result_type: Optional[str] = None,
-        score: Optional[float] = None
+        score: Optional[float] = None,
+        metadata: Optional[dict] = None
     ):
         self.status = status
         self.message = message
@@ -24,6 +25,7 @@ class SSE_Response:
         self.method_type = method_type
         self.result_type = result_type
         self.score = score
+        self.metadata = metadata
 
     def to_dict(self) -> dict:
         data = {
@@ -45,6 +47,9 @@ class SSE_Response:
             data["data"]["name"] = self.method_name
         if self.result_type:
             data["data"]["result_type"] = self.result_type
+
+        if self.metadata:
+            data["data"]["metadata"] = self.metadata
 
         return data
 

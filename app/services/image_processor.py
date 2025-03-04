@@ -5,6 +5,7 @@ from app.services.methods import METHODS
 from app.services.sse_response import SSE_Response, SSE_Error_Response
 from app.services.utils import save_to_json
 from app.core.config import settings
+from app.services.metadata.get_metadata import get_metadata
 
 
 async def process_multi_output_method(method_id, details, image_path, file_dir):
@@ -65,7 +66,7 @@ async def process_image(image_path, file_dir):
         yield SSE_Error_Response(f"Image at path {image_path} does not exist.").to_sse()
         return
 
-    try:
+    try:  
         for method_id, details in METHODS.items():
             if details["result_type"] == "multi_output":
                 async for result in process_multi_output_method(method_id, details, image_path, file_dir):
@@ -85,4 +86,4 @@ async def process_image(image_path, file_dir):
                 await asyncio.sleep(0.3)
 
     except Exception as e:
-        yield SSE_Error_Response(f"Unexpected processing error: {str(e)}").to_sse()
+        yield SSE_Error_Response(f"Unexpected processing error: {str(e)}", 503).to_sse()

@@ -4,11 +4,10 @@ from fastapi.responses import StreamingResponse
 import os
 import uuid
 
-import orjson
-
-from app.services.get_example_outputs import get_example_outputs
-from app.services.process_images import process_image
 from app.core.config import settings
+from app.services.image_processor import process_image
+from app.services.metadata_processor import process_metadata
+from app.services.get_example_outputs import get_example_outputs
 from app.services.sse_response import SSE_Error_Response, SSE_Response
 from app.services.utils import resize_image, save_uploaded_file
 
@@ -34,13 +33,16 @@ async def process_image_stream(file: UploadFile = File(...)):
     if not file_location:
         return StreamingResponse(iter([SSE_Error_Response("File upload failed").to_sse()]), media_type="text/event-stream")
 
-    image = resize_image(file_location, max_dimension=2000)
-
-    if image is None:
-        return StreamingResponse(iter([SSE_Error_Response("Invalid image file").to_sse()]), media_type="text/event-stream")
-
     async def event_generator():
         yield SSE_Response(status="starting", message="File received", output_path=file_location).to_sse()
+
+        metadata_response = await process_metadata(file_location, file_dir)
+        yield metadata_response.to_sse()
+
+        image = resize_image(file_location, max_dimension=1600)
+        if image is None:
+            yield SSE_Error_Response("Invalid image file").to_sse()
+            return
 
         try:
             async for result in process_image(file_location, file_dir):

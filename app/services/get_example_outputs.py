@@ -32,7 +32,8 @@ async def get_example_outputs(result_json_path):
                 method_name=data.get("name"),
                 method_type=output.get("method_type"),
                 result_type=data.get("result_type"),
-                score=output.get("score")
+                score=output.get("score"),
+                metadata=data.get("metadata"),
             ).to_sse()
 
             await asyncio.sleep(0.8)
