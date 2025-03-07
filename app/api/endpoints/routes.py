@@ -1,4 +1,3 @@
-import asyncio
 from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import StreamingResponse
 import os
@@ -9,7 +8,7 @@ from app.services.image_processor import process_image
 from app.services.metadata_processor import process_metadata
 from app.services.get_example_outputs import get_example_outputs
 from app.services.sse_response import SSE_Error_Response, SSE_Response
-from app.services.utils import resize_image, save_uploaded_file
+from app.services.utils import resize_image, save_uploaded_file, save_to_json
 
 router = APIRouter()
 
@@ -34,7 +33,10 @@ async def process_image_stream(file: UploadFile = File(...)):
         return StreamingResponse(iter([SSE_Error_Response("File upload failed").to_sse()]), media_type="text/event-stream")
 
     async def event_generator():
-        yield SSE_Response(status="starting", message="File received", output_path=file_location).to_sse()
+        starting_respnose = SSE_Response(
+            status="starting", message="File received", output_path=file_location)
+        yield starting_respnose.to_sse()
+        save_to_json(starting_respnose.to_json(), file_dir, "results.json")
 
         metadata_response = await process_metadata(file_location, file_dir)
         yield metadata_response.to_sse()
