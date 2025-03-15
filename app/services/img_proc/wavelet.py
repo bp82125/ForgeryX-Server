@@ -1,48 +1,20 @@
 import cv2
 import numpy as np
-import pywt
+
+from photoholmes.methods.wavelet import Wavelet, wavelet_preprocessing
+from photoholmes.utils.image import read_image, create_heatmap
+
+WaveletModel = Wavelet()
 
 
-def estimate_noise_std(block):
-    # Median Absolute Deviation (MAD)
-    MAD_CONSTANT = 0.6745
-    return np.median(np.abs(block - np.median(block))) / MAD_CONSTANT
+def high_frequency_noise_wavelet(image_path):
+    image = read_image(image_path)
+    image_data = {"image": image}
 
+    image_input = wavelet_preprocessing(**image_data)
 
-def process_channel(channel, block_size=32):
-    coeffs2 = pywt.dwt2(channel, 'db8')
-    _, (_, _, HH) = coeffs2
+    output = WaveletModel.predict(**image_input)
 
-    height, width = HH.shape
-    noise_map = np.zeros((height, width))
-
-    for i in range(0, height, block_size):
-        for j in range(0, width, block_size):
-            block = HH[i:i+block_size, j:j+block_size]
-            if block.shape == (block_size, block_size):
-                noise_map[i:i+block_size, j:j +
-                          block_size] = estimate_noise_std(block)
-
-    return noise_map
-
-
-def high_frequency_noise_wavelet(image_path, block_size=8, threshold=1.0):
-    image = cv2.imread(image_path)
-    if image is None:
-        raise ValueError(f"Image at path {image_path} could not be loaded.")
-    
-    ycrcb = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)
-    Y, Cr, Cb = cv2.split(ycrcb)
-
-    noise_Y = process_channel(Y, block_size)
-    noise_Cr = process_channel(Cr, block_size)
-    noise_Cb = process_channel(Cb, block_size)
-
-    combined_noise_map = np.maximum.reduce([noise_Y, noise_Cr, noise_Cb])
-    combined_noise_map = cv2.normalize(
-        combined_noise_map, None, 0, 255, cv2.NORM_MINMAX)
-
-    heatmap = cv2.applyColorMap(
-        combined_noise_map.astype(np.uint8), cv2.COLORMAP_JET)
+    heatmap = create_heatmap(output)
 
     return heatmap

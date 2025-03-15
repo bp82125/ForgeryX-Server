@@ -5,6 +5,7 @@ class Settings:
     EXAMPLE_DIR = f"{OUTPUT_DIR}/examples"
     RESULT_FILE = "results.json"
     WEIGHT_DIR = "/home/nhat82125/photoholmes/weights"
+    RECEIVE_FILE_NAME = "original"
 
 
 settings = Settings()

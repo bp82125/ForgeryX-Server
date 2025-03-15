@@ -1,3 +1,4 @@
+import gc
 from photoholmes.methods.psccnet import PSCCNet, psccnet_preprocessing
 from photoholmes.utils.image import read_image
 

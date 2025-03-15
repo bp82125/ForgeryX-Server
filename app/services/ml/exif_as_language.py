@@ -1,11 +1,10 @@
-from photoholmes.utils.image import read_image
+import gc
+from photoholmes.utils.image import read_image, create_heatmap
 from photoholmes.methods.exif_as_language import exif_as_language_preprocessing, EXIFAsLanguage
 
 from app.core.config import settings
 
 import torch
-import numpy as np
-import cv2
 
 
 arch_config = "pretrained"
@@ -29,8 +28,6 @@ def exif_as_language(image_path):
 
     consistency_map, _, score, _, _ = output
 
-    normalized = (consistency_map - np.min(consistency_map)) / \
-        (np.max(consistency_map) - np.min(consistency_map))
-    heatmap = cv2.applyColorMap(np.uint8(255 * normalized), cv2.COLORMAP_JET)
+    heatmap = create_heatmap(consistency_map)
 
     return heatmap, score

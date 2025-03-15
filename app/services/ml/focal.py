@@ -1,3 +1,4 @@
+import gc
 from photoholmes.methods.focal import Focal, focal_preprocessing
 from photoholmes.utils.image import read_image
 
@@ -15,6 +16,7 @@ FocalModel = Focal(
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 FocalModel.to_device(device)
+FocalModel.eval()
 
 
 def focal(image_path):
@@ -25,7 +27,9 @@ def focal(image_path):
 
     output = FocalModel.predict(**model_input)
 
-    output = output.cpu()
+    binary_output = output.cpu()
 
-    normalized_output = (output - output.min()) / (output.max() - output.min())
+    normalized_output = (binary_output - binary_output.min()) / \
+        (binary_output.max() - binary_output.min())
+
     return (normalized_output * 255).byte().numpy()

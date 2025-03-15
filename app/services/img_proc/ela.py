@@ -1,44 +1,18 @@
 import cv2
 import numpy as np
 
-QUALITY = 75
-DISPLAY_MULTIPLIER = 20
-SC_WIDTH = 600
-SC_HEIGHT = 600
+from photoholmes.methods.ela import ELA, ela_preprocessing
+from photoholmes.utils.image import read_image
+
+ELAModel = ELA()
 
 
-def recompress_image(image, quality):
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
-    result, encimg = cv2.imencode('.jpg', image, encode_param)
-    if not result:
-        raise ValueError("Could not recompress the image.")
-    recompressed_image = cv2.imdecode(encimg, 1)
-    return recompressed_image
+def ela(image_path):
+    image = read_image(image_path)
+    image_data = {"image": image}
 
+    image_input = ela_preprocessing(**image_data)
 
-def get_image_difference(image1, image2):
-    diff = image1.astype(np.float32) - image2.astype(np.float32)
-    diff = diff ** 2
-    return diff
+    output = ELAModel.predict(**image_input)
 
-
-def scale_image(image, width, height):
-    return cv2.resize(image, (width, height), interpolation=cv2.INTER_NEAREST)
-
-
-def ela(image_path, quality=75):
-    image = cv2.imread(image_path)
-    
-    if image is None:
-        raise ValueError(f"Image at path {image_path} could not be loaded.")
-    
-    recompressed_image = recompress_image(image, quality)
-    image_difference = get_image_difference(image, recompressed_image)
-
-    ela_min = np.min(image_difference)
-    ela_max = np.max(image_difference)
-
-    int_difference = np.sqrt(image_difference) * DISPLAY_MULTIPLIER
-    int_difference = np.clip(int_difference, ela_min, ela_max).astype(np.uint8)
-
-    return int_difference
+    return output

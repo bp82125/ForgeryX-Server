@@ -26,7 +26,7 @@ async def get_example_outputs(result_json_path):
 
             yield SSE_Response(
                 message=result.get("message", ""),
-                status=data.get("status", "processing"),
+                status=result.get("status", "processing"),
                 output_path=output.get("path"),
                 method_id=data.get("id"),
                 method_name=data.get("name"),

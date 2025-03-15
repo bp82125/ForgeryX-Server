@@ -4,6 +4,7 @@ import orjson
 import torch
 import cv2
 
+from app.core.config import settings
 
 def prepare_image(image):
     return torch.from_numpy(cv2.cvtColor(image, cv2.COLOR_BGR2RGB).transpose(2, 0, 1))
@@ -43,7 +44,7 @@ def save_uploaded_file(file, file_dir):
     os.makedirs(file_dir, exist_ok=True)
     file_extension = os.path.splitext(
         file.filename)[1] if file.filename else ".jpg"
-    file_location = os.path.join(file_dir, f"tampered{file_extension}")
+    file_location = os.path.join(file_dir, f"{settings.RECEIVE_FILE_NAME}{file_extension}")
 
     try:
         with open(file_location, "wb") as buffer:

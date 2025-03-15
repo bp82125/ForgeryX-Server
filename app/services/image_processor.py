@@ -1,11 +1,13 @@
 import os
 import cv2
 import asyncio
+
+from photoholmes.utils.image import save_image
+
 from app.services.methods import METHODS
 from app.services.sse_response import SSE_Response, SSE_Error_Response
 from app.services.utils import save_to_json
 from app.core.config import settings
-from app.services.metadata.get_metadata import get_metadata
 
 
 async def process_multi_output_method(method_id, details, image_path, file_dir):
@@ -31,7 +33,7 @@ async def process_multi_output_method(method_id, details, image_path, file_dir):
 async def process_scored_method(method_id, details, image_path, file_dir):
     output_path = os.path.join(file_dir, details["filename"])
     processed_img, score = await asyncio.to_thread(details["function"], image_path)
-    await asyncio.to_thread(cv2.imwrite, output_path, processed_img)
+    await asyncio.to_thread(save_image, output_path, processed_img)
 
     return SSE_Response(
         status="processing",
@@ -48,7 +50,7 @@ async def process_scored_method(method_id, details, image_path, file_dir):
 async def process_standard_method(method_id, details, image_path, file_dir):
     output_path = os.path.join(file_dir, details["filename"])
     processed_img = await asyncio.to_thread(details["function"], image_path)
-    await asyncio.to_thread(cv2.imwrite, output_path, processed_img)
+    await asyncio.to_thread(save_image, output_path, processed_img)
 
     return SSE_Response(
         status="processing",
@@ -66,7 +68,7 @@ async def process_image(image_path, file_dir):
         yield SSE_Error_Response(f"Image at path {image_path} does not exist.").to_sse()
         return
 
-    try:  
+    try:
         for method_id, details in METHODS.items():
             if details["result_type"] == "multi_output":
                 async for result in process_multi_output_method(method_id, details, image_path, file_dir):

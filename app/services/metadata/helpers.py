@@ -72,7 +72,7 @@ def convert_encoding_process(value):
 
 def convert_filesize(file_size_bytes):
     file_size_kb = round(file_size_bytes / 1024)
-    return f"Filesize {file_size_kb} kB"
+    return f"{file_size_kb} kB"
 
 
 def convert_exif_byte_order(byte_order):
@@ -528,10 +528,21 @@ def format_profile_id(profile_id):
 
 
 def format_image_size(image_size):
-    if not isinstance(image_size, (list, tuple)) or len(image_size) != 2:
+    if isinstance(image_size, str):
+        parts = image_size.strip().split()
+        if len(parts) == 2:
+            try:
+                width = int(parts[0])
+                height = int(parts[1])
+                return f"{width}x{height}"
+            except ValueError:
+                return "Invalid Image Size format"
         return "Invalid Image Size format"
 
-    return f"{image_size[0]}x{image_size[1]}"
+    elif isinstance(image_size, (list, tuple)) and len(image_size) == 2:
+        return f"{image_size[0]}x{image_size[1]}"
+
+    return "Invalid Image Size format"
 
 
 def round_megapixels(megapixels):
@@ -557,7 +568,7 @@ def format_shutter_speed(shutter_speed):
 
 def format_circle_of_confusion(value):
     if not isinstance(value, (int, float)):
-        return "Invalid Circle of Confusion value"
+        return value
 
     return f"{round(value, 4)} mm"
 
@@ -591,6 +602,18 @@ def format_light_value(value):
 
 
 def convert_to_actual_focal_length(equivalent_focal_length, crop_factor):
+    if isinstance(equivalent_focal_length, str):
+        equivalent_focal_length = float(
+            equivalent_focal_length.replace('mm', '').strip())
+    else:
+        equivalent_focal_length = float(equivalent_focal_length)
+
+    if isinstance(crop_factor, str):
+
+        crop_factor = float(crop_factor.replace('mm', '').strip())
+    else:
+        crop_factor = float(crop_factor)
+
     if crop_factor <= 0:
         raise ValueError("Crop factor must be greater than zero")
 
