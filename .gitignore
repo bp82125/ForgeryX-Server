@@ -173,9 +173,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-output/*
-!output/examples/   
-java/
-weights/
-notebooks/
-output/
+output/*  
+java/*
+weights/*
+notebooks/*
