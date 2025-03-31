@@ -1,9 +1,20 @@
 import exiftool
 from .helpers import convert_metadata_value, convert_to_actual_focal_length
+import os
+import imghdr
 
 
 def get_metadata(image_path):
     metadata = {}
+    
+    if not image_path:
+        raise ValueError("Image path is not provided")
+
+    if not os.path.exists(image_path):
+        raise FileNotFoundError(f"Image file not found at: {image_path}")
+
+    if imghdr.what(image_path) is None:
+        raise ValueError(f"The file at {image_path} is not a valid image")
 
     with exiftool.ExifTool() as et:
         exif_data = et.execute_json(image_path)
