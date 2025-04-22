@@ -26,8 +26,10 @@ def exif_as_language(image_path):
     with torch.no_grad():
         output = ExifModel.predict(**model_input)
 
-    consistency_map, _, score, _, _ = output
+    # consistency_map, _, score, _, _ = output
 
-    heatmap = create_heatmap(consistency_map)
+    ms, _, score = output
+
+    heatmap = create_heatmap(ms)
 
     return heatmap, score
