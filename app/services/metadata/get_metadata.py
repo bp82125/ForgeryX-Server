@@ -13,9 +13,6 @@ def get_metadata(image_path):
     if not os.path.exists(image_path):
         raise FileNotFoundError(f"Image file not found at: {image_path}")
 
-    if imghdr.what(image_path) is None:
-        raise ValueError(f"The file at {image_path} is not a valid image")
-
     with exiftool.ExifTool() as et:
         exif_data = et.execute_json(image_path)
 
