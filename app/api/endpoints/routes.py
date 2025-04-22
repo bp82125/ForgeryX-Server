@@ -30,11 +30,11 @@ async def process_image_stream(file: UploadFile = File(...)):
     file_location = save_uploaded_file(file, file_dir)
 
     if not file_location:
-        return StreamingResponse(iter([SSE_Error_Response("File upload failed").to_sse()]), media_type="text/event-stream")
+        return StreamingResponse(iter([SSE_Error_Response("Tải ảnh lên server thất bại").to_sse()]), media_type="text/event-stream")
 
     async def event_generator():
         starting_respnose = SSE_Response(
-            status="starting", message="File received", output_path=file_location)
+            status="starting", message="Đã tải file lên server thành công", output_path=file_location)
         yield starting_respnose.to_sse()
         save_to_json(starting_respnose.to_json(), file_dir, "results.json")
 
@@ -52,6 +52,6 @@ async def process_image_stream(file: UploadFile = File(...)):
         except Exception as e:
             yield SSE_Error_Response(f"Processing error: {str(e)}").to_sse()
 
-        yield SSE_Response(status="finished", message="Processing complete", output_path=file_location).to_sse()
+        yield SSE_Response(status="finished", message="Quá trình xử lý kết thúc", output_path=file_location).to_sse()
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")

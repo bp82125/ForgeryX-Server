@@ -42,4 +42,4 @@ async def get_example_outputs(result_json_path):
             yield SSE_Error_Response("Error: Malformed entry in results.json", status="error").to_sse()
             continue
 
-    yield SSE_Response("Example streaming complete", status="finished").to_sse()
+    yield SSE_Response("Quá trình xử lý kết thúc", status="finished").to_sse()

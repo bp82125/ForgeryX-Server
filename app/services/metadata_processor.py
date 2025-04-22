@@ -11,7 +11,7 @@ async def process_metadata(image_path, file_dir):
 
     metadata_response = SSE_Response(
         status="processing",
-        message="Metadata extracted successfully",
+        message="Thông tin về EXIF metadata đã được trích xuất thành công",
         method_id="metadata",
         method_name="Metadata Extraction",
         result_type="metadata",

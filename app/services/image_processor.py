@@ -21,7 +21,7 @@ async def process_multi_output_method(method_id, details, image_path, file_dir):
     for identifier, output_path in multi_output_results:
         yield SSE_Response(
             status="processing",
-            message=f"Method {details['name']} applied with identifier {identifier}",
+            message=f"Phương pháp {details['name']} đã được áp dụng với {identifier}",
             method_id=method_id,
             method_name=f"{details['name']} - {identifier}",
             output_path=output_path,
@@ -37,7 +37,7 @@ async def process_scored_method(method_id, details, image_path, file_dir):
 
     return SSE_Response(
         status="processing",
-        message=f"Method {details['name']} applied with score {score}",
+        message=f"Phương pháp {details['name']} đã được áp dụng thành công độ tin cậy {score*100:.3f}%",
         method_id=method_id,
         method_name=details["name"],
         output_path=output_path,
@@ -54,7 +54,7 @@ async def process_standard_method(method_id, details, image_path, file_dir):
 
     return SSE_Response(
         status="processing",
-        message=f"Method {details['name']} applied successfully",
+        message=f"Phương pháp {details['name']} đã được áp dụng thành công",
         method_id=method_id,
         method_name=details["name"],
         output_path=output_path,
